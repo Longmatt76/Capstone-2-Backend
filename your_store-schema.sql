@@ -27,7 +27,6 @@ CREATE TABLE theme (
 );
 
 CREATE TABLE store_config (
-    id SERIAL PRIMARY KEY,
     store_id INT NOT NULL,
     store_name VARCHAR(100) UNIQUE NOT NULL,
     logo VARCHAR(2083),
