@@ -36,8 +36,6 @@ CREATE TABLE store_config (
     FOREIGN KEY (theme_id) REFERENCES theme(id)
 );
 
-
-
 CREATE TABLE user_info (
     id SERIAL PRIMARY KEY,
     email VARCHAR(320) NOT NULL UNIQUE,
@@ -45,7 +43,6 @@ CREATE TABLE user_info (
     user_password VARCHAR(50) NOT NULL,
     date_created TIMESTAMP
 );
-
 
 CREATE TABLE address (
     id SERIAL PRIMARY KEY,
@@ -56,7 +53,7 @@ CREATE TABLE address (
 );
 
 CREATE TABLE user_address (
-    user_id INT,
+    user_id INT NOT NULL,
     address_id INT,
     is_default BOOLEAN,
     PRIMARY KEY (user_id, address_id),
@@ -81,7 +78,6 @@ CREATE TABLE user_payment_method (
     FOREIGN KEY (payment_type_id) REFERENCES payment_type(id)
 );
 
-
 CREATE TABLE category (
     id SERIAL PRIMARY KEY,
     store_id INT NOT NULL,
@@ -99,7 +95,6 @@ CREATE TABLE promotion (
     FOREIGN KEY (store_id) REFERENCES store(id)
 );
 
-
 CREATE TABLE product (
     id SERIAL PRIMARY KEY,
     store_id INT NOT NULL,
@@ -114,7 +109,6 @@ CREATE TABLE product (
     FOREIGN KEY (category_id) REFERENCES category(id),
     FOREIGN KEY (promotion_id) REFERENCES promotion(id)
 );
-
 
 CREATE TABLE shopping_cart (
     id SERIAL PRIMARY KEY,
@@ -153,7 +147,6 @@ CREATE TABLE store_order (
     FOREIGN KEY (address_id) REFERENCES address(id),
     FOREIGN KEY (order_status) REFERENCES order_status(id)
 );
-
 
 CREATE TABLE order_line (
     id SERIAL PRIMARY KEY,
