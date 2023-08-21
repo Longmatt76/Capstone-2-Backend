@@ -1,10 +1,10 @@
 
 CREATE TABLE store_owner (
     id SERIAL PRIMARY KEY,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50)  NOT NULL,
-    owner_email VARCHAR(320) UNIQUE NOT NULL,
-    owner_password VARCHAR(50) NOT NULL
+    first_name VARCHAR(30) NOT NULL,
+    last_name VARCHAR(30)  NOT NULL,
+    email VARCHAR(80) UNIQUE NOT NULL,
+    password VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE store (
@@ -38,10 +38,13 @@ CREATE TABLE store_config (
 
 CREATE TABLE user_info (
     id SERIAL PRIMARY KEY,
-    email VARCHAR(320) NOT NULL UNIQUE,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    user_password VARCHAR(50) NOT NULL,
-    date_created TIMESTAMP
+    username VARCHAR(30) UNIQUE NOT NULL,
+    password VARCHAR(80) NOT NULL,
+    email VARCHAR(80) NOT NULL UNIQUE,
+    first_name VARCHAR(30) NOT NULL,
+    last_name VARCHAR(30) NOT NULL,
+    is_admin BOOLEAN,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
 );
 
 CREATE TABLE address (
