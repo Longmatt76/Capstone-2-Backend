@@ -4,13 +4,14 @@ CREATE TABLE store_owner (
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30)  NOT NULL,
     email VARCHAR(80) UNIQUE NOT NULL,
-    password VARCHAR(20) NOT NULL
+    password VARCHAR(80) NOT NULL,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE store (
     id SERIAL PRIMARY KEY,
     owner_id INT NOT NULL, 
-    date_created TIMESTAMP,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (owner_id) REFERENCES store_owner(id) ON DELETE CASCADE
 );
 
@@ -49,20 +50,14 @@ CREATE TABLE user_info (
 
 CREATE TABLE address (
     id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
     street_address VARCHAR(255),
     city VARCHAR(100),
     state_residence VARCHAR(100),
-    zip_code INT
+    zip_code INT,
+    FOREIGN KEY (user_id) REFERENCES user_info(id)
 );
 
-CREATE TABLE user_address (
-    user_id INT NOT NULL,
-    address_id INT,
-    is_default BOOLEAN,
-    PRIMARY KEY (user_id, address_id),
-    FOREIGN KEY (user_id) REFERENCES user_info(id),
-    FOREIGN KEY (address_id) REFERENCES address(id)
-);
 
 CREATE TABLE payment_type (
     id SERIAL PRIMARY KEY,
@@ -138,14 +133,16 @@ CREATE TABLE order_status (
 CREATE TABLE store_order (
     id SERIAL PRIMARY KEY,
     store_id INT NOT NULL,
+    cart_id INT NOT NULL,
     user_id INT NOT NULL,
     payment_method_id INT NOT NULL,
     address_id INT NOT NULL,
-    order_date TIMESTAMP,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     order_status INT NOT NULL,
     order_total DECIMAL,
     FOREIGN KEY (store_id) REFERENCES store(id),
     FOREIGN KEY (user_id) REFERENCES user_info(id),
+    FOREIGN KEY (cart_id) REFERENCES shopping_cart(id),
     FOREIGN KEY (payment_method_id) REFERENCES user_payment_method(id),
     FOREIGN KEY (address_id) REFERENCES address(id),
     FOREIGN KEY (order_status) REFERENCES order_status(id)

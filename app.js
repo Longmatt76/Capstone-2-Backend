@@ -4,14 +4,15 @@ const express = require("express");
 const app = express();
 
 const { NotFoundError } = require("./expressError");
-
+const { authenticateJWT } = require("./middleware/auth")
 const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/users")
 
 app.use(express.json());
-
+app.use(authenticateJWT);
 app.use("/auth", authRoutes);
+app.use("/users", userRoutes );
 
-console.log(process.env.NODE_ENV);
 
 // handle 404 errors
 app.use(function (req, res, next) {

@@ -3,7 +3,7 @@
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config");
 const { UnauthorizedError } = require("../expressError");
-const { token } = require("morgan");
+
 
 
 // authenticate user, if token, verify and store payload on res.locals
@@ -46,7 +46,7 @@ function ensureAdmin(req, res, next) {
 function ensureCorrectUserOrAdmin(req, res, next) {
     try {
         const user = res.locals.user;
-        if(!(user && (user.isAdmin || user.username === req.params.username))){
+        if(!(user && (user.isAdmin || user.userId === +req.params.userId))){
             throw new UnauthorizedError();
         }
         return next();

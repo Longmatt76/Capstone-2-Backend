@@ -15,11 +15,13 @@ class User {
   static async authenticate(username, password) {
     const user = await knex("user_info")
       .select(
+        "id AS userId",
         "username",
         "password",
         "first_name AS firstName",
         "last_name AS lastName",
-        "email"
+        "email",
+        "is_admin AS isAdmin"
       )
       .where("username", username)
       .first();
@@ -34,6 +36,7 @@ class User {
     throw new UnauthorizedError("Invalid username or password");
   }
 
+  //  creates a new user
   static async register({
     username,
     password,
@@ -53,27 +56,75 @@ class User {
       .insert({
         username,
         password: hashedPassword,
-        first_name: firstName,
+        first_name: firstName,  
         last_name: lastName,
         email,
         is_admin: isAdmin || false,
       })
-      .returning([
+      .returning(["id AS userId", "is_admin AS isAdmin"]);
+    
+    return user;
+  }
+
+  // retrieves user info with a relationship to the users addresses
+  static async get(userId) {
+    const user = await knex("user_info")
+      .select(
         "username",
         "email",
-      ]);
+        "first_name AS firstName",
+        "last_name AS lastName",
+        "is_admin AS isAdmin"
+      )
+      .where("id", userId)
+      .first();
+
+    if (!user) throw new NotFoundError(`User not found`);
+
+    const addresses = await knex("address")
+      .select(
+        "street_address AS streetAddress",
+        "city",
+        "state_residence AS state",
+        "zip_code AS zipCode"
+      )
+      .where("user_id", userId);
+
+    user.addresses = addresses.map((a) => ({
+      streetAddress: a.streetAddress,
+      city: a.city,
+      state: a.state,
+      zipCode: a.zipCode,
+    }));
 
     return user;
-  };
-
-  static async findAll() {
-    const users = await knex("user_info")
-      .select('username', 'first_name AS firstName', 'last_name AS lastName', 'email', 'is_admin AS isAdmin')
-      .orderBy('username');
-
-    return users;
   }
-}
+
+  // updates an existing user and returns the updated user
+  static async update(userId, data) {
+    const user = await knex("user_info").where("id", userId).first();
+
+    if (!user) throw new NotFoundError(`User not found`);
+
+    const updatedUser = {
+      ...user,
+      ...data,
+    };
+
+    await knex("user_info").where("id", userId).update(updatedUser);
+
+    return updatedUser;
+  }
+
+  // deletes a users account
+  static async delete(userId) {
+    const count = await knex("user_info").where("id", userId).delete();
+
+    if (count === 0) throw new NotFoundError(`User not found`);
+
+    return `User with id:${userId} deleted`;
+  };
+};
 
 
 module.exports = User;
