@@ -42,6 +42,19 @@ function ensureAdmin(req, res, next) {
     }
 };
 
+// ensure correct store owner
+function ensureCorrectStoreOwnerOrAdmin(req, res, next) {
+  try {
+    const owner = res.locals.user;
+    if (!(owner && (owner.isAdmin || owner.ownerId === +req.params.ownerId))) {
+      throw new UnauthorizedError();
+    }
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+}
+
 // ensure valid token and user.username is matching when required
 function ensureCorrectUserOrAdmin(req, res, next) {
     try {
@@ -60,4 +73,5 @@ module.exports = {
     ensureLoggedIn,
     ensureAdmin,
     ensureCorrectUserOrAdmin,
+    ensureCorrectStoreOwnerOrAdmin,
 };

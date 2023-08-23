@@ -33,7 +33,6 @@ class User {
         return user;
       }
     }
-    throw new UnauthorizedError("Invalid username or password");
   }
 
   //  creates a new user

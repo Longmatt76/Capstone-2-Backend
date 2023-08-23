@@ -1,10 +1,12 @@
 
 CREATE TABLE store_owner (
     id SERIAL PRIMARY KEY,
+    username VARCHAR(30) UNIQUE NOT NULL,
+    password VARCHAR(80) NOT NULL,
+    email VARCHAR(80) NOT NULL UNIQUE,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30)  NOT NULL,
-    email VARCHAR(80) UNIQUE NOT NULL,
-    password VARCHAR(80) NOT NULL,
+    is_admin BOOLEAN NOT NULL,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -44,7 +46,7 @@ CREATE TABLE user_info (
     email VARCHAR(80) NOT NULL UNIQUE,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    is_admin BOOLEAN,
+    is_admin BOOLEAN NOT NULL,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
 );
 
