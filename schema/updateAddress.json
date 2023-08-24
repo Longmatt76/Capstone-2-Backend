@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+      "streetAddress": {
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 60
+      },
+      "city": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 30
+      },
+      "state": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 20
+      },
+      "zipCode": {
+        "type": "string",
+        "minLength": 5,
+        "maxLength": 9
+      }
+    },
+    "additionalProperties": false
+  }

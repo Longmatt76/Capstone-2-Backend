@@ -52,7 +52,7 @@ CREATE TABLE user_info (
 
 CREATE TABLE address (
     id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
+    user_id INT UNIQUE NOT NULL,
     street_address VARCHAR(255),
     city VARCHAR(100),
     state_residence VARCHAR(100),
