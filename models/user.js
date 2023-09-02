@@ -69,6 +69,7 @@ class User {
   static async get(userId) {
     const user = await knex("user_info")
       .select(
+        "id AS userId",
         "username",
         "email",
         "first_name AS firstName",
@@ -99,21 +100,25 @@ class User {
     return user;
   }
 
-  // updates an existing user and returns the updated user
-  static async update(userId, data) {
-    const user = await knex("user_info").where("id", userId).first();
+// updates an existing user and returns the updated user
+static async update(userId, data) {
+  const user = await knex("user_info").where("id", userId).first();
 
-    if (!user) throw new NotFoundError(`User not found`);
+  if (!user) throw new NotFoundError(`User not found`);
 
-    const updatedUser = {
-      ...user,
-      ...data,
-    };
+  const { firstName, lastName, ...otherData } = data;
 
-    await knex("user_info").where("id", userId).update(updatedUser);
+  const updatedUser = {
+    first_name: firstName || user.first_name,
+    last_name: lastName || user.last_name,
+    ...otherData,
+  };
 
-    return updatedUser;
-  }
+  await knex("user_info").where("id", userId).update(updatedUser);
+
+  return updatedUser;
+}
+
 
   // deletes a users account
   static async delete(userId) {

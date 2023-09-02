@@ -21,7 +21,7 @@ class Address {
       .returning(["id AS addressId, user_id AS userId"]);
 
     if (!address) throw new BadRequestError("Address creation failed");
-    return address;
+    return [address];
   }
 
   //   lets user update existing address
@@ -30,9 +30,13 @@ class Address {
 
     if (!address) throw new NotFoundError(`Address not found`);
 
+    const {streetAddress, zipCode, state , ...otherData} = data;
+
     const updatedAddress = {
-      ...address,
-      ...data,
+      street_address: streetAddress || address.street_address,
+      zip_code: zipCode || address.zip_code,
+      state_residence: state || address.state_residence,
+      ...otherData,
     };
 
     await knex("address").where("id", user_id).update(updatedAddress);
@@ -42,7 +46,7 @@ class Address {
 
   //   lets user delete existing address
   static async delete(user_id) {
-    const count = await knex("address").where("id", user_id).delete();
+    const count = await knex("address").where("user_id", user_id).delete();
 
     if (count === 0) throw new NotFoundError(`Address not found`);
 

@@ -14,8 +14,10 @@ const { BadRequestError } = require('../expressError');
 // Unified login route for both users and owners
 router.post("/token", async function (req, res, next) {
   try {
+    
     const validator = jsonschema.validate(req.body, userAuthSchema);
     if (!validator.valid) {
+      console.log('Request Body:', req.body);
       const errs = validator.errors.map((e) => e.stack);
       throw new BadRequestError(errs);
     }
@@ -26,9 +28,10 @@ router.post("/token", async function (req, res, next) {
     const user = await User.authenticate(username, password);
     if (user) {
       const token = createUserToken(user);
+      console.log(token);
       return res.json({ token });
     }
-    
+
     // Check if the user is a store owner
     const owner = await Owner.authenticate(username, password);
     if (owner) {
@@ -49,6 +52,7 @@ router.post("/register-user", async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, userNewSchema);
     if (!validator.valid) {
+      console.log('Request Body:', req.body);
       const errs = validator.errors.map((e) => e.stack);
       throw new BadRequestError(errs);
     }

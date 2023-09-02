@@ -44,7 +44,7 @@ router.put(
   }
 );
 
-
+// removes a users account, middleware ensures correct user
 router.delete(
   "/:userId",
   ensureCorrectUserOrAdmin,
@@ -101,6 +101,7 @@ router.put(
   }
 );
 
+// deletes a users stored address
 router.delete(
   "/address/:userId",
   ensureCorrectUserOrAdmin,

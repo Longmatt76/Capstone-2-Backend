@@ -22,6 +22,7 @@ class Owner {
         "first_name AS firstName",
         "last_name AS lastName",
         "email",
+        "roles",
         "is_admin AS isAdmin"
       )
       .where("username", username)
@@ -45,6 +46,7 @@ class Owner {
     lastName,
     email,
     isAdmin,
+    roles,
   }) {
     const duplicateUser = await knex("store_owner")
       .where("username", username)
@@ -61,6 +63,7 @@ class Owner {
         last_name: lastName,
         email,
         is_admin: isAdmin || false,
+        roles: roles || "owner",
       })
       .returning(["id AS ownerId", "is_admin AS isAdmin"]);
 
@@ -71,10 +74,12 @@ class Owner {
   static async get(ownerId) {
     const owner = await knex("store_owner")
       .select(
+        "id AS ownerId",
         "username",
         "email",
         "first_name AS firstName",
         "last_name AS lastName",
+        "roles",
         "is_admin AS isAdmin"
       )
       .where("id", ownerId)
@@ -92,9 +97,12 @@ class Owner {
     if (!owner)
       throw new NotFoundError(`Store owner with id ${ownerId} not found`);
 
+    const { firstName, lastName, ...otherData } = data;
+
     const updatedOwner = {
-      ...owner,
-      ...data,
+      first_name: firstName || owner.first_name,
+      last_name: lastName || owner.last_name,
+      ...otherData,
     };
 
     await knex("store_owner").where("id", ownerId).update(updatedOwner);

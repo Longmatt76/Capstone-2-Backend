@@ -7,41 +7,23 @@ CREATE TABLE store_owner (
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30)  NOT NULL,
     is_admin BOOLEAN NOT NULL,
+    roles TEXT,  
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE store (
     id SERIAL PRIMARY KEY,
     owner_id INT NOT NULL, 
+    store_name VARCHAR(100) UNIQUE NOT NULL,
+    logo VARCHAR(2083),
+    theme TEXT,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (owner_id) REFERENCES store_owner(id) ON DELETE CASCADE
 );
 
-CREATE TABLE theme (
-    id SERIAL PRIMARY KEY,
-    color_one TEXT, 
-    color_two TEXT,
-    color_three TEXT,
-    position_x INT,
-    position_y INT,
-    width INT,
-    height INT,
-    css_class VARCHAR(100)
-);
-
-CREATE TABLE store_config (
-    store_id INT NOT NULL,
-    store_name VARCHAR(100) UNIQUE NOT NULL,
-    logo VARCHAR(2083),
-    slogan TEXT,
-    theme_id INT,
-    FOREIGN KEY (store_id) REFERENCES store(id) ON DELETE CASCADE,
-    FOREIGN KEY (theme_id) REFERENCES theme(id)
-);
-
 CREATE TABLE user_info (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(30) UNIQUE NOT NULL,
+    username VARCHAR(30) NOT NULL UNIQUE,
     password VARCHAR(80) NOT NULL,
     email VARCHAR(80) NOT NULL UNIQUE,
     first_name VARCHAR(30) NOT NULL,
@@ -57,7 +39,7 @@ CREATE TABLE address (
     city VARCHAR(100),
     state_residence VARCHAR(100),
     zip_code INT,
-    FOREIGN KEY (user_id) REFERENCES user_info(id)
+    FOREIGN KEY (user_id) REFERENCES user_info(id) ON DELETE CASCADE
 );
 
 

@@ -21,7 +21,7 @@ function createOwnerToken(user) {
 
   let payload = {
     ownerId: user.ownerId,
-    isAdmin: user.isAdmin || true,
+    isAdmin: user.isAdmin || false,
   };
   return jwt.sign(payload, SECRET_KEY);
 }
