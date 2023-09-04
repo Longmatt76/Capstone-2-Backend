@@ -10,7 +10,7 @@ const updateStoreSchema = require("../schema/updateStore.json");
 
 // creates a new store
 router.post(
-    "/stores/:ownerId",
+    "/:ownerId",
     ensureCorrectStoreOwnerOrAdmin,
     async function (req, res, next) {
       try {

@@ -11,10 +11,13 @@
       "type": "string",
       "format": "uri-reference"
     },
-    "theme": {
+    "colorScheme": {
+      "type": "string"
+    },
+    "siteFont": {
       "type": "string"
     }
   },
   "additionalProperties": false,
-  "required": ["logo", "storeName", "theme"]
+  "required": ["logo", "storeName", "colorScheme", "siteFont"]
 }

@@ -16,7 +16,8 @@ CREATE TABLE store (
     owner_id INT NOT NULL, 
     store_name VARCHAR(100) UNIQUE NOT NULL,
     logo VARCHAR(2083),
-    theme TEXT,
+    color_scheme TEXT,
+    site_font TEXT, 
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (owner_id) REFERENCES store_owner(id) ON DELETE CASCADE
 );

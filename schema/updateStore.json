@@ -1,20 +1,23 @@
 {
-    "$schema": "http://json-schema.org/draft-06/schema#",
-    "type": "object",
-    "properties": {
-      "storeName": {
-        "type": "string",
-        "minLength": 1,
-        "maxLength": 60
-      },
-      "logo": {
-        "type": "string",
-        "format": "uri-reference"
-      },
-      "theme": {
-        "type": "string"
-      }
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "object",
+  "properties": {
+    "storeName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
     },
-    "additionalProperties": false,
-    "required": ["logo", "storeName", "theme"]
-  }
+    "logo": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "colorScheme": {
+      "type": "string"
+    },
+    "siteFont": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["logo", "storeName", "colorScheme", "siteFont"]
+}
