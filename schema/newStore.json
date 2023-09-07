@@ -11,7 +11,7 @@
       "type": "string",
       "format": "uri-reference"
     },
-    "colorScheme": {
+    "theme": {
       "type": "string"
     },
     "siteFont": {
@@ -19,5 +19,5 @@
     }
   },
   "additionalProperties": false,
-  "required": ["logo", "storeName", "colorScheme", "siteFont"]
+  "required": ["logo", "storeName", "theme", "siteFont"]
 }

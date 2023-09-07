@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+
+  "type": "object",
+  "properties": {
+    "storeId": {
+      "type": "integer"
+    },
+    "category_id": {
+      "type": "integer"
+    },
+    "categoryName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "productName": {
+      "type": "string"
+    },
+    "productDescription": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "price": {
+      "type": "number"
+    },
+    "qty": {
+      "type": "integer"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "categoryName",
+    "image",
+    "price",
+    "productDescription",
+    "productName",
+    "qty",
+    "storeId"
+  ]
+}

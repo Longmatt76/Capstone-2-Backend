@@ -16,7 +16,7 @@ CREATE TABLE store (
     owner_id INT NOT NULL, 
     store_name VARCHAR(100) UNIQUE NOT NULL,
     logo VARCHAR(2083),
-    color_scheme TEXT,
+    theme TEXT,
     site_font TEXT, 
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (owner_id) REFERENCES store_owner(id) ON DELETE CASCADE
@@ -64,25 +64,26 @@ CREATE TABLE user_payment_method (
 CREATE TABLE category (
     id SERIAL PRIMARY KEY,
     store_id INT NOT NULL,
-    category_name TEXT UNIQUE NOT NULL,
-    FOREIGN KEY (store_id) REFERENCES store(id)
+    category_name TEXT NOT NULL,
+    FOREIGN KEY (store_id) REFERENCES store(id),
+    CONSTRAINT unique_category_per_store UNIQUE (store_id, category_name)
 );
 
-CREATE TABLE promotion (
-    id SERIAL PRIMARY KEY, 
-    store_id INT NOT NULL,
-    prom_description TEXT,
-    prom_start_date TIMESTAMP,
-    prom_end_date TIMESTAMP,
-    discount_rate DECIMAL,
-    FOREIGN KEY (store_id) REFERENCES store(id)
-);
+
+-- CREATE TABLE promotion (
+--     id SERIAL PRIMARY KEY, 
+--     store_id INT NOT NULL,
+--     prom_description TEXT,
+--     prom_start_date TIMESTAMP,
+--     prom_end_date TIMESTAMP,
+--     discount_rate DECIMAL,
+--     FOREIGN KEY (store_id) REFERENCES store(id)
+-- );
 
 CREATE TABLE product (
     id SERIAL PRIMARY KEY,
     store_id INT NOT NULL,
-    category_id INT,
-    promotion_id INT, 
+    category_id INT NOT NULL,
     product_name VARCHAR(100) NOT NULL,
     product_description TEXT,
     product_img VARCHAR(2083),
@@ -90,25 +91,24 @@ CREATE TABLE product (
     qty_in_stock INT,
     FOREIGN KEY (store_id) REFERENCES store(id),
     FOREIGN KEY (category_id) REFERENCES category(id),
-    FOREIGN KEY (promotion_id) REFERENCES promotion(id)
 );
 
-CREATE TABLE shopping_cart (
-    id SERIAL PRIMARY KEY,
-    store_id INT NOT NULL,
-    user_id INT NOT NULL,
-    FOREIGN KEY (store_id) REFERENCES store(id),
-    FOREIGN KEY (user_id) REFERENCES user_info(id)
-);
+-- CREATE TABLE shopping_cart (
+--     id SERIAL PRIMARY KEY,
+--     store_id INT NOT NULL,
+--     user_id INT NOT NULL,
+--     FOREIGN KEY (store_id) REFERENCES store(id),
+--     FOREIGN KEY (user_id) REFERENCES user_info(id)
+-- );
 
-CREATE TABLE shopping_cart_item (
-    id SERIAL PRIMARY KEY,
-    cart_id INT NOT NULL,
-    product_id INT NOT NULL,
-    qty INT,
-    FOREIGN KEY (cart_id) REFERENCES shopping_cart(id),
-    FOREIGN KEY (product_id) REFERENCES product(id)
-);
+-- CREATE TABLE shopping_cart_item (
+--     id SERIAL PRIMARY KEY,
+--     cart_id INT NOT NULL,
+--     product_id INT NOT NULL,
+--     qty INT,
+--     FOREIGN KEY (cart_id) REFERENCES shopping_cart(id),
+--     FOREIGN KEY (product_id) REFERENCES product(id)
+-- );
 
 CREATE TABLE order_status (
     id SERIAL PRIMARY KEY,
@@ -127,7 +127,6 @@ CREATE TABLE store_order (
     order_total DECIMAL,
     FOREIGN KEY (store_id) REFERENCES store(id),
     FOREIGN KEY (user_id) REFERENCES user_info(id),
-    FOREIGN KEY (cart_id) REFERENCES shopping_cart(id),
     FOREIGN KEY (payment_method_id) REFERENCES user_payment_method(id),
     FOREIGN KEY (address_id) REFERENCES address(id),
     FOREIGN KEY (order_status) REFERENCES order_status(id)

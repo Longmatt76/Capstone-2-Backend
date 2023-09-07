@@ -1,7 +1,6 @@
 "use strict";
 
 const knex = require("../db");
-const bcrypt = require("bcrypt");
 const {
   NotFoundError,
   BadRequestError,
@@ -10,7 +9,7 @@ const {
 
 class Store {
   // creates a new store
-  static async create(ownerId, { storeName, logo, colorScheme, siteFont }) {
+  static async create(ownerId, { storeName, logo, theme, siteFont }) {
     const duplicateStore = await knex("store")
       .where("store_name", storeName)
       .first();
@@ -24,7 +23,7 @@ class Store {
         owner_id: ownerId,
         store_name: storeName,
         logo,
-        color_scheme: colorScheme,
+        theme,
         site_font: siteFont,
       })
       .returning("id AS storeId", "store_name AS storeName");
@@ -41,7 +40,7 @@ class Store {
         "owner_id AS ownerId",
         "store_name AS storeName",
         "logo",
-        "color_scheme AS colorScheme",
+        "theme",
         "site_font AS siteFont"
       )
       .where("owner_id", ownerId)
@@ -123,12 +122,11 @@ class Store {
 
     if (!store) throw new NotFoundError("Store not found");
 
-    const { storeName, storeId, colorScheme, siteFont, ...otherData } = data;
+    const { storeName, storeId, siteFont, ...otherData } = data;
 
     const updatedStore = {
       store_name: storeName || store.store_name,
       id: storeId || store.id,
-      color_scheme: colorScheme || store.color_scheme,
       site_font: siteFont || store.site_font,
       ...otherData,
     };

@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+
+  "type": "object",
+  "properties": {
+    "productName": {
+      "type": "string"
+    },
+    "productDescription": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "price": {
+      "type": "string"
+    },
+    "qty": {
+      "type": "integer"
+    }
+  },
+  "additionalProperties": true,
+  "required": ["image", "price", "productDescription", "productName", "qty"]
+}
