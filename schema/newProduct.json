@@ -3,42 +3,36 @@
 
   "type": "object",
   "properties": {
-    "storeId": {
-      "type": "integer"
-    },
-    "category_id": {
-      "type": "integer"
+    "productName": {
+      "type": "string"
     },
     "categoryName": {
       "type": "string",
       "minLength": 1,
       "maxLength": 60
     },
-    "productName": {
+    "brand": {
       "type": "string"
     },
     "productDescription": {
       "type": "string"
     },
     "image": {
-      "type": "string",
-      "format": "uri-reference"
     },
     "price": {
-      "type": "number"
+      "type": "string"
     },
     "qty": {
-      "type": "integer"
+      "type": "string"
     }
   },
-  "additionalProperties": false,
+  "additionalProperties": true,
   "required": [
     "categoryName",
     "image",
     "price",
     "productDescription",
     "productName",
-    "qty",
-    "storeId"
+    "qty"
   ]
 }

@@ -36,6 +36,7 @@ class Category {
         "id AS productId",
         "category_id AS categoryId",
         "product_name AS name",
+        "brand",
         "product_description AS description",
         "product_img AS image",
         "price",
@@ -46,6 +47,7 @@ class Category {
     category.products = products.map((p) => ({
       id: p.productId,
       name: p.name,
+      brand: p.brand,
       description: p.description,
       image: p.image,
       price: p.price,

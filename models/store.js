@@ -53,6 +53,7 @@ class Store {
     const products = await knex("product")
       .select(
         "id AS productId",
+        "category_id AS categoryId",
         "product_name AS name",
         "product_description AS description",
         "product_img AS image",
@@ -63,6 +64,7 @@ class Store {
 
     store.products = products.map((p) => ({
       id: p.productId,
+      categoryId: p.categoryId,
       name: p.name,
       description: p.description,
       image: p.image,
@@ -77,24 +79,6 @@ class Store {
     store.categories = categories.map((c) => ({
       id: c.categoryId,
       name: c.name,
-    }));
-
-    const promotions = await knex("promotion")
-      .select(
-        "id AS promId",
-        "prom_description AS description",
-        "prom_start_date AS startDate",
-        "prom_end_date AS endDate",
-        "discount_rate AS discountRate"
-      )
-      .where("store_id", storeId);
-
-    store.promotions = promotions.map((p) => ({
-      id: p.promId,
-      description: p.description,
-      startDate: p.startDate,
-      endDate: p.endDate,
-      discountRate: p.discountRate,
     }));
 
     const orders = await knex("store_order")

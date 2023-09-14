@@ -13,8 +13,12 @@ class Product {
   // category,if none exists it first creates category then the product
   static async create(
     storeId,
-    { categoryName, productName, productDescription, image, price, qty }
+    { categoryName, productName, productDescription, image, price, qty, brand }
   ) {
+  //  convert price and qty from strings to numbers
+    const parsedPrice = parseFloat(price);
+    const parsedQty = parseInt(qty);
+
     // Check if the category exists
     const categoryCheck = await knex("category")
       .select("id AS categoryId", "category_name AS categoryName")
@@ -42,11 +46,12 @@ class Product {
       .insert({
         store_id: storeId,
         category_id: categoryId,
+        brand,
         product_name: productName,
         product_description: productDescription,
         product_img: image,
-        price,
-        qty_in_stock: qty,
+        price: parsedPrice,
+        qty_in_stock: parsedQty,
       })
       .returning("id");
 
@@ -57,16 +62,19 @@ class Product {
   static async get(productId) {
     const product = await knex("product")
       .select(
-        "id AS productId",
-        "store_id AS storeId",
-        "category_id AS categoryId",
-        "product_name AS productName",
-        "product_description AS productDescription",
-        "product_img AS image",
-        "price",
-        "qty_in_stock AS qty"
+        "product.id AS productId",
+        "product.store_id AS storeId",
+        "product.category_id AS categoryId",
+        "product.product_name AS productName",
+        "product.brand",
+        "product.product_description AS productDescription",
+        "product.product_img AS image",
+        "product.price",
+        "product.qty_in_stock AS qty",
+        "category.category_name AS categoryName"
       )
-      .where("id", productId)
+      .where("product.id", productId)
+      .leftJoin("category", "product.category_id", "category.id")
       .first();
 
     if (!product) throw new NotFoundError("Product not found");
@@ -74,35 +82,39 @@ class Product {
     return product;
   }
 
-  //  retrieves all products from a single store and sorts by productName and a desired priceRange
+  //  retrieves all products from a single store and sorts by productName
+  //  and a desired priceRange, joins with category table for access to categoryName
   static async getAll(storeId, searchFilters = {}) {
     const { productSearch, priceRange } = searchFilters;
-    let productsQuery = knex("product")
-      .select(
-        "id AS productId",
-        "store_id AS storeId",
-        "category_id AS categoryId",
-        "product_name AS productName",
-        "product_description AS productDescription",
-        "product_img AS image",
-        "price",
-        "qty_in_stock AS qty"
-      )
-      .where("store_id", storeId);
   
+    const products = await knex("product")
+      .select(
+        "product.id AS productId",
+        "product.store_id AS storeId",
+        "product.category_id AS categoryId",
+        "product.product_name AS productName",
+        "product.brand AS brand",
+        "product.product_description AS productDescription",
+        "product.product_img AS image",
+        "product.price",
+        "product.qty_in_stock AS qty",
+        "category.category_name AS categoryName" 
+      )
+      .where("product.store_id", storeId)
+      .leftJoin("category", "product.category_id", "category.id"); 
+
     if (productSearch) {
-      productsQuery = productsQuery.whereILike("product_name", `%${productSearch}%`);
+      products.where("product.product_name", "ilike", `%${productSearch}%`);
     }
   
     if (priceRange && priceRange.length === 2) {
       const [minPrice, maxPrice] = priceRange;
-      productsQuery = productsQuery.andWhereBetween("price", [minPrice, maxPrice]);
+      products.whereBetween("product.price", [minPrice, maxPrice]);
     }
-  
-    const products = await productsQuery;
   
     return products;
   }
+  
   
 
   //   update an existing product
@@ -113,12 +125,15 @@ class Product {
 
     const { productName, productDescription, qty, image, price, storeId, categoryId, ...otherData } = data;
 
+    const parsedPrice = parseFloat(price);
+    const parsedQty = parseInt(qty);
+
     const updatedProduct = {
       product_name: productName || product.product_name,
       product_description: productDescription || product.product_description,
       product_img: image || product.product_img,
-      qty_in_stock: qty || product.qty_in_stock,
-      price: +price || product.price,
+      qty_in_stock: parsedQty || product.qty_in_stock,
+      price: parsedPrice || product.price,
       store_id: storeId || product.store_id,
       category_id: categoryId || product.category_id,
       ...otherData,

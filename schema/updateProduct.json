@@ -6,18 +6,19 @@
     "productName": {
       "type": "string"
     },
+    "brand" : {
+      "type": "string"
+    },
     "productDescription": {
       "type": "string"
     },
     "image": {
-      "type": "string",
-      "format": "uri-reference"
     },
     "price": {
-      "type": "string"
+      "type": ["string", "number"]
     },
     "qty": {
-      "type": "integer"
+      "type": ["string", "integer"]
     }
   },
   "additionalProperties": true,

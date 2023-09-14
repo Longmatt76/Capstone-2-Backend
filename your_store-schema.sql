@@ -65,50 +65,23 @@ CREATE TABLE category (
     id SERIAL PRIMARY KEY,
     store_id INT NOT NULL,
     category_name TEXT NOT NULL,
-    FOREIGN KEY (store_id) REFERENCES store(id),
+    FOREIGN KEY (store_id) REFERENCES store(id) ON DELETE CASCADE,
     CONSTRAINT unique_category_per_store UNIQUE (store_id, category_name)
 );
-
-
--- CREATE TABLE promotion (
---     id SERIAL PRIMARY KEY, 
---     store_id INT NOT NULL,
---     prom_description TEXT,
---     prom_start_date TIMESTAMP,
---     prom_end_date TIMESTAMP,
---     discount_rate DECIMAL,
---     FOREIGN KEY (store_id) REFERENCES store(id)
--- );
 
 CREATE TABLE product (
     id SERIAL PRIMARY KEY,
     store_id INT NOT NULL,
     category_id INT NOT NULL,
     product_name VARCHAR(100) NOT NULL,
+    brand TEXT, 
     product_description TEXT,
     product_img VARCHAR(2083),
     price DECIMAL,
     qty_in_stock INT,
-    FOREIGN KEY (store_id) REFERENCES store(id),
-    FOREIGN KEY (category_id) REFERENCES category(id),
+    FOREIGN KEY (store_id) REFERENCES store(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE
 );
-
--- CREATE TABLE shopping_cart (
---     id SERIAL PRIMARY KEY,
---     store_id INT NOT NULL,
---     user_id INT NOT NULL,
---     FOREIGN KEY (store_id) REFERENCES store(id),
---     FOREIGN KEY (user_id) REFERENCES user_info(id)
--- );
-
--- CREATE TABLE shopping_cart_item (
---     id SERIAL PRIMARY KEY,
---     cart_id INT NOT NULL,
---     product_id INT NOT NULL,
---     qty INT,
---     FOREIGN KEY (cart_id) REFERENCES shopping_cart(id),
---     FOREIGN KEY (product_id) REFERENCES product(id)
--- );
 
 CREATE TABLE order_status (
     id SERIAL PRIMARY KEY,
