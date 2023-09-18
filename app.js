@@ -10,8 +10,11 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
 const ownerRoutes = require("./routes/owners");
 const storeRoutes = require("./routes/stores");
+const checkoutRoutes = require("./routes/checkout");
+
 
 app.use(cors());
+app.use('/checkout/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
 app.use(authenticateJWT);
 
@@ -19,6 +22,7 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes );
 app.use("/owners", ownerRoutes);
 app.use("/stores", storeRoutes);
+app.use("/checkout", checkoutRoutes);
 
 // handle 404 errors
 app.use(function (req, res, next) {
