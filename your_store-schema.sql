@@ -44,23 +44,6 @@ CREATE TABLE address (
 );
 
 
-CREATE TABLE payment_type (
-    id SERIAL PRIMARY KEY,
-    type_value VARCHAR(50)
-);
-
-CREATE TABLE user_payment_method (
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
-    payment_type_id INT NOT NULL,
-    pay_provider TEXT,
-    account_num VARCHAR(100),
-    exp_date TEXT,
-    is_default BOOLEAN,
-    FOREIGN KEY (user_id) REFERENCES user_info(id),
-    FOREIGN KEY (payment_type_id) REFERENCES payment_type(id)
-);
-
 CREATE TABLE category (
     id SERIAL PRIMARY KEY,
     store_id INT NOT NULL,
@@ -83,26 +66,16 @@ CREATE TABLE product (
     FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE
 );
 
-CREATE TABLE order_status (
-    id SERIAL PRIMARY KEY,
-    status_code TEXT
-);
 
 CREATE TABLE store_order (
     id SERIAL PRIMARY KEY,
     store_id INT NOT NULL,
-    cart_id INT NOT NULL,
     user_id INT NOT NULL,
-    payment_method_id INT NOT NULL,
-    address_id INT NOT NULL,
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    order_status INT NOT NULL,
+    order_status TEXT NOT NULL DEFAULT 'pending',
     order_total DECIMAL,
     FOREIGN KEY (store_id) REFERENCES store(id),
-    FOREIGN KEY (user_id) REFERENCES user_info(id),
-    FOREIGN KEY (payment_method_id) REFERENCES user_payment_method(id),
-    FOREIGN KEY (address_id) REFERENCES address(id),
-    FOREIGN KEY (order_status) REFERENCES order_status(id)
+    FOREIGN KEY (user_id) REFERENCES user_info(id)
 );
 
 CREATE TABLE order_line (

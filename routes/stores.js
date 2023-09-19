@@ -194,7 +194,6 @@ router.post(
 // get a single product by id, middleware verifies correct store owner
 router.get(
   "/:ownerId/products/:productId",
-  ensureCorrectStoreOwnerOrAdmin,
   async function (req, res, next) {
     try {
       const product = await Product.get(req.params.productId);
@@ -209,7 +208,6 @@ router.get(
 // and priceRange, middleware verifies the correct store owner
 router.get(
   "/:ownerId/products/all/:storeId",
-  ensureCorrectStoreOwnerOrAdmin,
   async function (req, res, next) {
     const { productSearch, priceRange } = req.query;
     const searchFilters = {};
