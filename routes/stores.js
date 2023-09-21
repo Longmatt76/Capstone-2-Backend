@@ -1,10 +1,11 @@
 const express = require("express");
 const router = new express.Router();
 const jsonschema = require("jsonschema");
-const { BadRequestError } = require('../expressError');
-const Store = require('../models/store');
+const { BadRequestError } = require("../expressError");
+const Store = require("../models/store");
 const Category = require("../models/category");
 const Product = require("../models/product");
+const Carousel = require("../models/carousel");
 const { ensureCorrectStoreOwnerOrAdmin } = require("../middleware/auth");
 const newStoreSchema = require("../schema/newStore.json");
 const updateStoreSchema = require("../schema/updateStore.json");
@@ -13,77 +14,74 @@ const updateCategorySchema = require("../schema/updateCategory.json");
 const newProductSchema = require("../schema/newProduct.json");
 const updateProductSchema = require("../schema/updateProduct.json");
 
-
 // creates a new store
 router.post(
-    "/:ownerId",
-    ensureCorrectStoreOwnerOrAdmin,
-    async function (req, res, next) {
-      try {
-        const validator = jsonschema.validate(req.body, newStoreSchema);
-        if (!validator.valid) {
-          const errs = validator.errors.map((e) => e.stack);
-          throw new BadRequestError(errs);
-        }
-        const store = await Store.create(req.params.ownerId, { ...req.body });
-        return res.json({ store });
-      } catch (err) {
-        return next(err);
+  "/:ownerId",
+  ensureCorrectStoreOwnerOrAdmin,
+  async function (req, res, next) {
+    try {
+      const validator = jsonschema.validate(req.body, newStoreSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(errs);
       }
+      const store = await Store.create(req.params.ownerId, { ...req.body });
+      return res.json({ store });
+    } catch (err) {
+      return next(err);
     }
-  );
+  }
+);
 
-  // get a single store by id, middleware verifies correct store owner
+// get a single store by id, middleware verifies correct store owner
 router.get(
-    "/:ownerId",
-    ensureCorrectStoreOwnerOrAdmin,
-    async function (req, res, next) {
-      try {
-        const store = await Store.get(req.params.ownerId);
-        return res.json({ store });
-      } catch (err) {
-        return next(err);
-      }
+  "/:ownerId",
+  ensureCorrectStoreOwnerOrAdmin,
+  async function (req, res, next) {
+    try {
+      const store = await Store.get(req.params.ownerId);
+      return res.json({ store });
+    } catch (err) {
+      return next(err);
     }
-  );
-  
-  // updates a single store, middleware ensures correct store owner
-  router.put(
-    "/:ownerId",
-    ensureCorrectStoreOwnerOrAdmin,
-    async function (req, res, next) {
-      try {
-        const validator = jsonschema.validate(req.body, updateStoreSchema);
-        if (!validator.valid) {
-          const errs = validator.errors.map((e) => e.stack);
-          throw new BadRequestError(errs);
-        }
-  
-        const updatedStore = await Store.update(req.params.ownerId, req.body);
-        return res.json({ updatedStore });
-      } catch (err) {
-        return next(err);
+  }
+);
+
+// updates a single store, middleware ensures correct store owner
+router.put(
+  "/:ownerId",
+  ensureCorrectStoreOwnerOrAdmin,
+  async function (req, res, next) {
+    try {
+      const validator = jsonschema.validate(req.body, updateStoreSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(errs);
       }
+
+      const updatedStore = await Store.update(req.params.ownerId, req.body);
+      return res.json({ updatedStore });
+    } catch (err) {
+      return next(err);
     }
-  );
-  
+  }
+);
+
 //   deletes a single store, middleware verifies correct store owner
-  router.delete(
-    "/:ownerId",
-    ensureCorrectStoreOwnerOrAdmin,
-    async function (req, res, next) {
-      try {
-        await Store.delete(req.params.ownerId);
-        return res.json({ deleted: req.params.ownerId });
-      } catch (err) {
-        return next(err);
-      }
+router.delete(
+  "/:ownerId",
+  ensureCorrectStoreOwnerOrAdmin,
+  async function (req, res, next) {
+    try {
+      await Store.delete(req.params.ownerId);
+      return res.json({ deleted: req.params.ownerId });
+    } catch (err) {
+      return next(err);
     }
-  );
-  
+  }
+);
 
-
-  // **********************************Category Routes******************************************
+// **********************************Category Routes******************************************
 
 // creates a new category
 router.post(
@@ -96,7 +94,9 @@ router.post(
         const errs = validator.errors.map((e) => e.stack);
         throw new BadRequestError(errs);
       }
-      const category = await Category.create(req.params.storeId, { ...req.body });
+      const category = await Category.create(req.params.storeId, {
+        ...req.body,
+      });
       return res.json({ category });
     } catch (err) {
       return next(err);
@@ -118,7 +118,6 @@ router.get(
   }
 );
 
-
 // gets all categories from a single store, middleware verifies correct store owner
 router.get(
   "/:ownerId/categories/all/:storeId",
@@ -126,8 +125,8 @@ router.get(
   async function (req, res, next) {
     try {
       const categories = await Category.getAll(req.params.storeId);
-      return res.json({categories});
-    }catch(err){
+      return res.json({ categories });
+    } catch (err) {
       return next(err);
     }
   }
@@ -145,7 +144,10 @@ router.put(
         throw new BadRequestError(errs);
       }
 
-      const updatedCategory = await Category.update(req.params.categoryId, req.body);
+      const updatedCategory = await Category.update(
+        req.params.categoryId,
+        req.body
+      );
       return res.json({ updatedCategory });
     } catch (err) {
       return next(err);
@@ -167,10 +169,7 @@ router.delete(
   }
 );
 
-
-
 // *************************************Product Routes****************************************
-
 
 // creates a new product
 router.post(
@@ -192,44 +191,38 @@ router.post(
 );
 
 // get a single product by id, middleware verifies correct store owner
-router.get(
-  "/:ownerId/products/:productId",
-  async function (req, res, next) {
-    try {
-      const product = await Product.get(req.params.productId);
-      return res.json({ product });
-    } catch (err) {
-      return next(err);
-    }
+router.get("/:ownerId/products/:productId", async function (req, res, next) {
+  try {
+    const product = await Product.get(req.params.productId);
+    return res.json({ product });
+  } catch (err) {
+    return next(err);
   }
-);
+});
 
-// gets all products from a single store, allows for filtering by product name 
+// gets all products from a single store, allows for filtering by product name
 // and priceRange, middleware verifies the correct store owner
-router.get(
-  "/:ownerId/products/all/:storeId",
-  async function (req, res, next) {
-    const { productSearch, priceRange } = req.query;
-    const searchFilters = {};
+router.get("/:ownerId/products/all/:storeId", async function (req, res, next) {
+  const { productSearch, priceRange } = req.query;
+  const searchFilters = {};
 
-    if (productSearch) {
-      searchFilters.productSearch = productSearch;
-    }
-
-    if (priceRange) {
-      // Assuming priceRange is a string in the format "minPrice-maxPrice"
-      const [minPrice, maxPrice] = priceRange.split('-').map(Number);
-      searchFilters.priceRange = [minPrice, maxPrice];
-    }
-
-    try {
-      const products = await Product.getAll(req.params.storeId, searchFilters);
-      return res.json({ products });
-    } catch (err) {
-      return next(err);
-    }
+  if (productSearch) {
+    searchFilters.productSearch = productSearch;
   }
-);
+
+  if (priceRange) {
+    // Assuming priceRange is a string in the format "minPrice-maxPrice"
+    const [minPrice, maxPrice] = priceRange.split("-").map(Number);
+    searchFilters.priceRange = [minPrice, maxPrice];
+  }
+
+  try {
+    const products = await Product.getAll(req.params.storeId, searchFilters);
+    return res.json({ products });
+  } catch (err) {
+    return next(err);
+  }
+});
 
 // updates a single product, middleware ensures correct store owner
 router.put(
@@ -243,7 +236,10 @@ router.put(
         throw new BadRequestError(errs);
       }
 
-      const updatedProduct = await Product.update(req.params.productId, req.body);
+      const updatedProduct = await Product.update(
+        req.params.productId,
+        req.body
+      );
       return res.json({ updatedProduct });
     } catch (err) {
       return next(err);
@@ -265,9 +261,63 @@ router.delete(
   }
 );
 
+// *************************************** Carousel Routes************************************
 
+router.post(
+  "/:ownerId/carousel/:storeId",
+  ensureCorrectStoreOwnerOrAdmin,
+  async function (req, res, next) {
+    try {
+      const {
+        imageOne,
+        imageOneHeader,
+        imageOneText,
+        imageTwo,
+        imageTwoHeader,
+        imageTwoText
+      } = req.body;
 
+      const carousel = await Carousel.create(
+        req.params.storeId,
+        imageOne,
+        imageOneHeader,
+        imageOneText,
+        imageTwo,
+        imageTwoHeader,
+        imageTwoText
+      );
 
+      return res.json({ carousel });
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
 
+router.get(
+  "/:ownerId/carousel/:storeId",
+  ensureCorrectStoreOwnerOrAdmin,
+  async function (req, res, next) {
+    try {
+      const carousel = await Carousel.get(req.params.storeId);
+      return res.json({ carousel });
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
+
+router.put(
+  "/:ownerId/carousel/:storeId",
+  ensureCorrectStoreOwnerOrAdmin,
+  async function (req, res, next) {
+    try {
+      const updatedCarousel = await Carousel.update(req.params.storeId, req.body);
+      return res.json({updatedCarousel})
+    }catch (err) {
+      return next(err);
+    }
+  }
+);
 
 module.exports = router;

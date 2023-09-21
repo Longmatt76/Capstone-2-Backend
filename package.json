@@ -25,5 +25,8 @@
     "pg": "8.11.3",
     "stripe": "^13.6.0",
     "trash-cli": "^5.0.0"
+  },
+  "devDependencies": {
+    "supertest": "^6.3.3"
   }
 }

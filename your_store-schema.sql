@@ -59,9 +59,9 @@ CREATE TABLE product (
     product_name VARCHAR(100) NOT NULL,
     brand TEXT, 
     product_description TEXT,
-    product_img VARCHAR(2083),
-    price DECIMAL,
-    qty_in_stock INT,
+    product_img VARCHAR(2083) DEFAULT 'https://media.istockphoto.com/id/1452662817/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=bGI_FngX0iexE3EBANPw9nbXkrJJA4-dcEJhCrP8qMw=',
+    price DECIMAL NOT NULL,
+    qty_in_stock INT NOT NULL,
     FOREIGN KEY (store_id) REFERENCES store(id) ON DELETE CASCADE,
     FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE
 );
@@ -74,8 +74,8 @@ CREATE TABLE store_order (
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     order_status TEXT NOT NULL DEFAULT 'pending',
     order_total DECIMAL,
-    FOREIGN KEY (store_id) REFERENCES store(id),
-    FOREIGN KEY (user_id) REFERENCES user_info(id)
+    FOREIGN KEY (store_id) REFERENCES store(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user_info(id) ON DELETE CASCADE
 );
 
 CREATE TABLE order_line (
@@ -85,9 +85,21 @@ CREATE TABLE order_line (
     order_id INT NOT NULL,
     qty INT,
     price DECIMAL,
-    FOREIGN KEY (store_id) REFERENCES store(id),
-    FOREIGN KEY (product_id) REFERENCES product(id),
-    FOREIGN KEY (order_id) REFERENCES store_order(id)
+    FOREIGN KEY (store_id) REFERENCES store(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,
+    FOREIGN KEY (order_id) REFERENCES store_order(id) ON DELETE CASCADE
+);
+
+CREATE TABLE carousel (
+    id SERIAL PRIMARY KEY,
+    store_id INT NOT NULL,
+    image_one TEXT,
+    image_one_header VARCHAR(250),
+    image_one_text VARCHAR(500),
+    image_two TEXT,
+    image_two_header VARCHAR(250),
+    image_two_text VARCHAR(500), 
+    FOREIGN KEY (store_id) REFERENCES store(id) ON DELETE CASCADE
 );
 
 

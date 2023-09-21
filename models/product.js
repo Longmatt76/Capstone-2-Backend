@@ -23,7 +23,7 @@ class Product {
         .where("category_name", categoryName)
         .andWhere("store_id", storeId)
         .first();
-
+       
       if (categoryCheck === null || categoryCheck === undefined) {
         // Create the category
         const [newCategoryId] = await transaction("category")
@@ -35,14 +35,14 @@ class Product {
 
         categoryId = newCategoryId;
       } else {
-        categoryId = categoryCheck.categoryId;
+        categoryId = categoryCheck.id;
       }
-
+    
       // Insert the product
       const [productId] = await transaction("product")
         .insert({
           store_id: storeId,
-          category_id: categoryId.id,
+          category_id: categoryId.id ? categoryId.id : categoryId,
           brand,
           product_name: productName,
           product_description: productDescription,
