@@ -1,20 +1,32 @@
 const knex = require("../db.js");
+const bcrypt = require('bcrypt');
+const  { BCRYPT_WORK_FACTOR } = require('../config.js');
+const  { createUserToken, createOwnerToken } = require("../helpers/tokens.js")
 
 async function commonBeforeAll() {
   await knex.raw(
     "TRUNCATE TABLE store_owner, store, user_info, address, carousel, category, store_order, order_line, product RESTART IDENTITY"
   );
 
-  const testOwner = {
+  const testOwners =[ {
     username: "test_owner",
-    password: "password",
+    password: await bcrypt.hash("password", BCRYPT_WORK_FACTOR),
     first_name: "Test",
     last_name: "Owner",
     email: "test@owner.com",
     is_admin: false,
-  };
+  },
+  {
+    username: "test_owner_two",
+    password: await bcrypt.hash("password2", BCRYPT_WORK_FACTOR),
+    first_name: "TestTwo",
+    last_name: "Owner",
+    email: "testTwo@owner.com",
+    is_admin: false,
+  }
+];
 
-  await knex("store_owner").insert(testOwner);
+  await knex("store_owner").insert(testOwners);
 
   const storeData = {
     owner_id: 1,
@@ -25,9 +37,9 @@ async function commonBeforeAll() {
 
   const testUser = {
     username: "test_user",
-    password: "password",
-    first_name: "test",
-    last_name: "user",
+    password: await bcrypt.hash("password", BCRYPT_WORK_FACTOR),
+    first_name: "Test",
+    last_name: "User",
     email: "test@user.com",
     is_admin: false,
   };
@@ -69,7 +81,13 @@ async function commonAfterAll() {
   await knex.destroy();
 }
 
+const ownerToken = createOwnerToken({ownerId: 1, isAdmin: false })
+const userToken = createUserToken({userId: 1, isAdmin: false})
+
+
 module.exports = {
   commonBeforeAll,
   commonAfterAll,
+  ownerToken,
+  userToken
 };

@@ -85,7 +85,7 @@ class Owner {
       .where("id", ownerId)
       .first();
 
-    if (!owner) throw new NotFoundError(`User not found`);
+    if (!owner) throw new NotFoundError(`Owner not found`);
 
     return owner;
   }

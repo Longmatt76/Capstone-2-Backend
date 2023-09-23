@@ -42,7 +42,6 @@ describe("getAll", function () {
   test("works", async function () {
     const storeOrders = await Order.getAll(storeId);
     expect(storeOrders.length).toEqual(1);
-    console.log(storeOrders);
     expect(storeOrders[0].order_status).toEqual("pending");
   });
 });

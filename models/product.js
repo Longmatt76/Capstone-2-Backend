@@ -89,8 +89,8 @@ class Product {
   //  and a desired priceRange, joins with category table for access to categoryName
   static async getAll(storeId, searchFilters = {}) {
     const { productSearch, priceRange } = searchFilters;
-
-    const products = await knex("product")
+  
+    let query = knex("product")
       .select(
         "product.id AS productId",
         "product.store_id AS storeId",
@@ -105,18 +105,21 @@ class Product {
       )
       .where("product.store_id", storeId)
       .leftJoin("category", "product.category_id", "category.id");
-
+  
     if (productSearch) {
-      products.where("product.product_name", "ilike", `%${productSearch}%`);
+      query = query.where("product.product_name", "ilike", `%${productSearch}%`);
     }
-
+  
     if (priceRange && priceRange.length === 2) {
       const [minPrice, maxPrice] = priceRange;
-      products.whereBetween("product.price", [minPrice, maxPrice]);
+      query = query.whereBetween("product.price", [minPrice, maxPrice]);
     }
-
+  
+    const products = await query;
+  
     return products;
   }
+  
 
   //   update an existing product
   static async update(productId, data) {
