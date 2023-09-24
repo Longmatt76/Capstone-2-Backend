@@ -3,10 +3,6 @@ const router = new express.Router();
 const stripe = require("stripe")(`${process.env.Stripe_Secret_Key}`);
 const Order = require("../models/order");
 
-const {
-  ensureCorrectStoreOwnerOrAdmin,
-  ensureCorrectUserOrAdmin,
-} = require("../middleware/auth");
 
 router.post(
   "/:ownerId/create-session/:userId", 
