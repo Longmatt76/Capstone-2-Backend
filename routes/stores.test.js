@@ -59,24 +59,12 @@ describe("POST /stores/:ownerId", function () {
 // ******************************** GET /stores/:ownerId ******************************************
 
 describe("GET /stores/:ownerId", function () {
-  test("works for correct owner", async function () {
+  test("works", async function () {
     const res = await request(app)
       .get(`/stores/1`)
-      .set("authorization", `Bearer ${ownerToken}`);
     expect(res.body.store.storeName).toEqual('test_store');
   });
 
-  test("unauth for wrong owner", async function () {
-    const resp = await request(app)
-      .get(`/stores/2`)
-      .set("authorization", `Bearer ${ownerToken}`);
-    expect(resp.statusCode).toEqual(401);
-  });
-
-  test("unauth for anon", async function () {
-    const resp = await request(app).get(`/stores/1`);
-    expect(resp.statusCode).toEqual(401);
-  });
 });
 
 // ************************************** PUT /stores/ownerId ************************************
@@ -160,47 +148,23 @@ describe("POST /stores/:ownerId/categories/:storeId", function () {
 
 
 describe("GET /stores/:ownerId/categories/:categoryId", function () {
-  test("works for correct owner", async function () {
+  test("works", async function () {
     const res = await request(app)
       .get(`/stores/1/categories/1`)
-      .set("authorization", `Bearer ${ownerToken}`);
     expect(res.body.category.categoryName).toEqual("testCategory")
   });
 
-  test("unauth for wrong owner", async function () {
-    const resp = await request(app)
-      .get(`/stores/1/categories/1`)
-      .set("authorization", `Bearer ${ownerTwoToken}`);
-    expect(resp.statusCode).toEqual(401);
-  });
-
-  test("unauth for anon", async function () {
-    const resp = await request(app).get(`/stores/1/categories/1`);
-    expect(resp.statusCode).toEqual(401);
-  });
 });
 
 // ******************************** GET /stores/:ownerId/categories/all/:storeId ****************
 
 describe("GET /stores/:ownerId/categories/all/:storeId", function () {
-  test("works for correct owner", async function () {
+  test("works", async function () {
     const res = await request(app)
       .get(`/stores/1/categories/all/1`)
-      .set("authorization", `Bearer ${ownerToken}`);
       expect(res.body.categories.length).toEqual(2)
   });
 
-  test("unauth for wrong owner", async function () {
-    const resp = await request(app)
-      .get(`/stores/1/categories/all/1`)
-      .set("authorization", `Bearer ${ownerTwoToken}`);
-    expect(resp.statusCode).toEqual(401);
-  });
-
-  test("unauth for anon", async function () {
-    const resp = await request(app).get(`/stores/1/categories/all/1`);
-    expect(resp.statusCode).toEqual(401);
-  });
 });
 
 // **************************************** PUT /stores/:ownerId/categories/:categoryId *********************
@@ -456,10 +420,9 @@ describe("POST /stores/:ownerId/carousel/:storeId", function () {
 // ********************************* GET /stores/:ownerId/carousel/:storeId **********************
 
 describe("GET /stores/:ownerId/carousel/:storeId", function () {
-  test("works for correct owner", async function () {
+  test("works", async function () {
     const res = await request(app)
       .get(`/stores/1/carousel/1`)
-      .set("authorization", `Bearer ${ownerToken}`);
     expect(res.body).toEqual(    {
       carousel: {
         imageOne: 'imageOneTest',

@@ -33,7 +33,7 @@ class Store {
 
 
   //  retrieves a single store's info
-  static async get(ownerId) {
+  static async get(storeId) {
     const store = await knex("store")
       .select(
         "id AS storeId",
@@ -43,12 +43,10 @@ class Store {
         "theme",
         "site_font AS siteFont"
       )
-      .where("owner_id", ownerId)
+      .where("id", storeId)
       .first();
 
     if (!store) throw new NotFoundError("Store not found");
-
-    const storeId = store.storeId
 
     const products = await knex("product")
       .select(

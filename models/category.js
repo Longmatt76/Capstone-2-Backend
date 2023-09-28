@@ -34,6 +34,7 @@ class Category {
     const products = await knex("product")
       .select(
         "id AS productId",
+        "store_id AS storeId",
         "category_id AS categoryId",
         "product_name AS name",
         "brand",
@@ -46,6 +47,7 @@ class Category {
 
     category.products = products.map((p) => ({
       id: p.productId,
+      storeId: p.storeId,
       name: p.name,
       brand: p.brand,
       description: p.description,

@@ -36,8 +36,8 @@ router.post("/:ownerId/create-session/:userId", async (req, res, next) => {
     },
     line_items,
     mode: "payment",
-    success_url: `${process.env.CLIENT_URL}/checkout-success`,
-    cancel_url: `${process.env.CLIENT_URL}/checkout-cancel`,
+    success_url: `${process.env.CLIENT_URL}/${req.body.cartItems[0].storeId}/checkout-success`,
+    cancel_url: `${process.env.CLIENT_URL}/${req.body.cartItems[0].storeId}/checkout-cancel`,
   });
 
   console.log(session);

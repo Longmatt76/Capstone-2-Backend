@@ -34,13 +34,12 @@ router.post(
   }
 );
 
-// get a single store by id, middleware verifies correct store owner
+// get a single store by id
 router.get(
-  "/:ownerId",
-  ensureCorrectStoreOwnerOrAdmin,
+  "/:storeId",
   async function (req, res, next) {
     try {
-      const store = await Store.get(req.params.ownerId);
+      const store = await Store.get(req.params.storeId);
       return res.json({ store });
     } catch (err) {
       return next(err);
@@ -108,7 +107,6 @@ router.post(
 // get a single category by id, middleware verifies correct store owner
 router.get(
   "/:ownerId/categories/:categoryId",
-  ensureCorrectStoreOwnerOrAdmin,
   async function (req, res, next) {
     try {
       const category = await Category.get(req.params.categoryId);
@@ -119,10 +117,9 @@ router.get(
   }
 );
 
-// gets all categories from a single store, middleware verifies correct store owner
+// gets all categories from a single store
 router.get(
   "/:ownerId/categories/all/:storeId",
-  ensureCorrectStoreOwnerOrAdmin,
   async function (req, res, next) {
     try {
       const categories = await Category.getAll(req.params.storeId);
