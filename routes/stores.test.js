@@ -472,17 +472,6 @@ describe("GET /stores/:ownerId/carousel/:storeId", function () {
     });
   });
 
-  test("unauth for wrong owner", async function () {
-    const resp = await request(app)
-      .get(`/stores/1/carousel/1`)
-      .set("authorization", `Bearer ${ownerTwoToken}`);
-    expect(resp.statusCode).toEqual(401);
-  });
-
-  test("unauth for anon", async function () {
-    const resp = await request(app).get(`/stores/1/carousel/1`);
-    expect(resp.statusCode).toEqual(401);
-  });
 });
 
 // *************************************** PUT /stores/:ownerId/carousel/:storeId *********************
@@ -532,3 +521,4 @@ describe("PUT /stores/:ownerId/carousel/:storeId", function () {
     expect(res.statusCode).toEqual(401);
   });
 });
+

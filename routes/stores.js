@@ -6,6 +6,7 @@ const Store = require("../models/store");
 const Category = require("../models/category");
 const Product = require("../models/product");
 const Carousel = require("../models/carousel");
+const Order = require("../models/order");
 const { ensureCorrectStoreOwnerOrAdmin } = require("../middleware/auth");
 const newStoreSchema = require("../schema/newStore.json");
 const updateStoreSchema = require("../schema/updateStore.json");
@@ -296,7 +297,6 @@ router.post(
 
 router.get(
   "/:ownerId/carousel/:storeId",
-  ensureCorrectStoreOwnerOrAdmin,
   async function (req, res, next) {
     try {
       const carousel = await Carousel.get(req.params.storeId);
@@ -321,3 +321,35 @@ router.put(
 );
 
 module.exports = router;
+
+
+// **************************************** ORDERS routes ***************************************
+
+// get a single category by id, middleware verifies correct store owner
+router.get(
+  "/:ownerId/orders/:orderId",
+  ensureCorrectStoreOwnerOrAdmin,
+  async function (req, res, next) {
+    try {
+      const order = await Category.get(req.params.orderId);
+      return res.json({ order });
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
+
+
+// gets all orders from a single store, middleware verifies correct store owner
+router.get(
+  "/:ownerId/orders/all/:storeId",
+  ensureCorrectStoreOwnerOrAdmin,
+  async function (req, res, next) {
+    try {
+      const orders = await Order.getAll(req.params.storeId);
+      return res.json({ orders });
+    } catch (err) {
+      return next(err);
+    }
+  }
+);

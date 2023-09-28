@@ -61,7 +61,7 @@ CREATE TABLE product (
     product_description TEXT,
     product_img VARCHAR(2083) DEFAULT 'https://media.istockphoto.com/id/1452662817/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=bGI_FngX0iexE3EBANPw9nbXkrJJA4-dcEJhCrP8qMw=',
     price DECIMAL NOT NULL,
-    qty_in_stock INT NOT NULL,
+    qty_in_stock INT,
     FOREIGN KEY (store_id) REFERENCES store(id) ON DELETE CASCADE,
     FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE
 );

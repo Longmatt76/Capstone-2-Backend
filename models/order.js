@@ -45,34 +45,32 @@ class Order {
       .where("store_order.id", orderId)
       .leftJoin("user_info", "user_info.id", "store_order.user_id")
       .first();
-
+  
     if (!order) throw new NotFoundError(`Order ${orderId} not found`);
-
+  
     const orderLines = await knex("order_line")
       .select("*")
       .where("order_id", orderId);
-
+  
     const productIds = orderLines.map((line) => line.product_id);
-
+  
     const products = await knex("product")
       .select("*")
       .whereIn("id", productIds);
-
-    orderLines.forEach((line, index) => {
-      line.products = products[index];
-    });
-
+  
     order.orderLines = orderLines.map((line) => ({
       id: line.id,
       store_id: line.store_id,
       product_id: line.product_id,
       price: line.price,
       qty: line.qty,
+ 
+      product: products.find((product) => product.id === line.product_id),
     }));
-
+  
     return order;
   }
-
+  
   static async getAll(storeId) {
     const orders = await knex("store_order")
       .select("*")
