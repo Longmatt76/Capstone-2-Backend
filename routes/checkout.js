@@ -40,7 +40,6 @@ router.post("/:ownerId/create-session/:userId", async (req, res, next) => {
     cancel_url: `${process.env.CLIENT_URL}/${req.body.cartItems[0].storeId}/checkout-cancel`,
   });
 
-  console.log(session);
   res.send({ url: session.url });
 });
 
@@ -175,7 +174,6 @@ router.post(
       case "checkout.session.completed":
         const checkoutSessionCompleted = event.data.object;
         const userId = checkoutSessionCompleted.metadata.userId;
-        console.log("checkout session complete", checkoutSessionCompleted);
         if (userId !== "undefined") {
           saveOrder(
             userId,
