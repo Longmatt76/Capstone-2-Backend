@@ -4,7 +4,7 @@
 YourStore is a platform for seamlessly and effortlessly creating your own ecommerce store. Within minutes you can build, customize and configure your own fully functional e-commerce store complete with Stripe checkout! It's important to note that this project was built as my final capstone for Springboard's software engineering career track. It's not intended for building actual commercial e-commerce websites, but rather mock sites which use Stripe in test mode. No actual transactions occur. Sorry, you won't be getting rich here! That being said, it's an excellent platform for testing out store ideas or just creating something fun in your spare time.
 
 ### Links
-Deployment_ COMING SOON! A live link will be posted here. 
+[deployed here](http://yourstore.cloud)
 [frontend code](https://github.com/Longmatt76/Capstone-2-Frontend) 
 [backend code](https://github.com/Longmatt76/Capstone-2-Backend)
 
