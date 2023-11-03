@@ -4,6 +4,7 @@ const stripe = require("stripe")(`${process.env.Stripe_Secret_Key}`);
 const Order = require("../models/order");
 const User = require("../models/user");
 const knex = require("../db");
+const myDomain = 'http://www.yourstore.cloud'
 
 router.post("/:ownerId/create-session/:userId", async (req, res, next) => {
   const line_items = req.body.cartItems.map((item) => {
@@ -36,8 +37,8 @@ router.post("/:ownerId/create-session/:userId", async (req, res, next) => {
     },
     line_items,
     mode: "payment",
-    success_url: `${process.env.CLIENT_URL}/${req.body.cartItems[0].storeId}/checkout-success`,
-    cancel_url: `${process.env.CLIENT_URL}/${req.body.cartItems[0].storeId}/checkout-cancel`,
+    success_url: `${myDomain}/${req.body.cartItems[0].storeId}/checkout-success`,
+    cancel_url: `${myDomain}/${req.body.cartItems[0].storeId}/checkout-cancel`,
   });
 
   res.send({ url: session.url });
@@ -57,7 +58,6 @@ router.post(
 
     try {
       event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-      console.log("Webhook verified");
     } catch (err) {
       console.log(`Webhook Error: ${err.message}`);
       res.status(400).send(`Webhook Error: ${err.message}`);
@@ -90,7 +90,6 @@ router.post(
           });
         }
         await transaction.commit();
-        console.log(`Order saved: ${order.id}`);
       } catch (err) {
         await transaction.rollback();
         console.error(err);
@@ -135,8 +134,7 @@ router.post(
           await transaction.commit();
         } else {
           const user = await User.register(userData);
-          console.log("user created", user.userId);
-
+      
           const parsedCart = JSON.parse(cart);
 
           for (let cartItem of parsedCart) {

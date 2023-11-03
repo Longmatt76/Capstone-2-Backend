@@ -2,7 +2,7 @@ const knex = require("knex");
 const config = require('./config');
 
 const getConnString = () => {
-return `postgresql://localhost:5432/${process.env.NODE_ENV === "test" ? "your_store_test" : "your_store"}`
+return `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@postgres:5432/${process.env.NODE_ENV === "test" ? "your_store_test" : "your_store"}`
 }
 
 const knexConfig = {
